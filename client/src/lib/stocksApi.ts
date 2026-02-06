@@ -693,6 +693,43 @@ export async function fetchStockNews(symbol: string): Promise<StockNewsItem[]> {
   return data.data || [];
 }
 
+// Spotlight Types
+export interface SpotlightTicker {
+  symbol: string;
+  imageUrl: string;
+  name: string;
+  styleImageUrl?: {
+    light: string;
+    dark: string;
+  };
+  exchange: string;
+  instrumentId: string;
+}
+
+export interface SpotlightItem {
+  id: string;
+  thumbnailTitle: string;
+  badge: string;
+  thumbnailDescription: string;
+  thumbnailImageUrl: string;
+  portraitImageUrl: string;
+  spotlightArticleUrl: string;
+  tickers: SpotlightTicker[];
+  position: number;
+  published: boolean;
+}
+
+export async function fetchSpotlight(): Promise<SpotlightItem[]> {
+  const res = await fetch(`${API_BASE}/content/spotlight`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch spotlight: ${res.statusText}`);
+  }
+  const data = await res.json();
+  // API returns an array directly; take only the top 3
+  const items = Array.isArray(data) ? data : data.data || [];
+  return items.slice(0, 3);
+}
+
 export async function fetchRefinitivReport(
   instrumentId: string
 ): Promise<RefinitivReport> {
