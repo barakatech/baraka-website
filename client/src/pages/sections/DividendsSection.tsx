@@ -68,25 +68,33 @@ export const DividendsSection = ({ instrumentDetails }: DividendsSectionProps): 
         <div className="relative h-[120px]">
           <svg viewBox="0 0 400 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
             {dividends.map((div, i) => {
+              if (i === 0) return null;
+              const x1 = 40 + ((i - 1) * 80);
+              const y1 = 70 - ((dividends[i - 1].amount - minAmount) / (maxAmount - minAmount || 1)) * 40;
+              const x2 = 40 + (i * 80);
+              const y2 = 70 - ((div.amount - minAmount) / (maxAmount - minAmount || 1)) * 40;
+              return (
+                <line
+                  key={`line-${i}`}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke="#555"
+                  strokeWidth="2"
+                />
+              );
+            })}
+            {dividends.map((div, i) => {
               const x = 40 + (i * 80);
               const y = 70 - ((div.amount - minAmount) / (maxAmount - minAmount || 1)) * 40;
               return (
-                <g key={i}>
-                  {i > 0 && (
-                    <line 
-                      x1={40 + ((i - 1) * 80)} 
-                      y1={70 - ((dividends[i - 1].amount - minAmount) / (maxAmount - minAmount || 1)) * 40}
-                      x2={x} 
-                      y2={y}
-                      stroke="#555" 
-                      strokeWidth="2"
-                    />
-                  )}
+                <g key={`point-${i}`}>
                   <circle cx={x} cy={y} r="6" fill="#0DDD00" />
-                  <text x={x} y={y - 15} fill="white" fontSize="12" textAnchor="middle" fontWeight="600">
+                  <text x={x} y={y - 15} fill="white" fontSize="14" textAnchor="middle" fontWeight="600">
                     ${div.amount.toFixed(2)}
                   </text>
-                  <text x={x} y="95" fill="rgba(255,255,255,0.5)" fontSize="11" textAnchor="middle">
+                  <text x={x} y="95" fill="rgba(255,255,255,0.5)" fontSize="14" textAnchor="middle">
                     {div.date}
                   </text>
                 </g>
