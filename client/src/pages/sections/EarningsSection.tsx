@@ -115,11 +115,11 @@ export const EarningsSection = ({ instrumentDetails }: EarningsSectionProps): JS
         <div className="flex items-center justify-center gap-6">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-white" />
-            <span className="text-white/50 text-sm">Actual</span>
+            <span className="text-white/50 text-[16px]">Actual</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-white/40" />
-            <span className="text-white/50 text-sm">Forecast</span>
+            <span className="text-white/50 text-[16px]">Forecast</span>
           </div>
         </div>
       </div>
