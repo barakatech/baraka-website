@@ -31,21 +31,31 @@ The frontend follows a page-based architecture with:
 - **HTTP Server**: Node.js native HTTP server
 - **Development**: Vite middleware integration for hot module replacement
 - **Static Assets**: Served from `attached_assets/` directory
+- **Port**: 5000 (set via PORT env var)
 
 The server uses a clean separation pattern:
 - `server/index.ts` - Main entry point and middleware setup
-- `server/routes.ts` - API route definitions
+- `server/routes/` - API route definitions (stocks, themes, sectors, trackers)
 - `server/storage.ts` - Data storage interface (currently in-memory)
 - `server/vite.ts` - Development server configuration
+- `server/cache.ts` - Caching layer
+- `server/utils/apiProxy.ts` - API proxy utilities
+- `server/middleware/errorHandler.ts` - Centralized error handling
 
 ### Data Layer
 
 - **ORM**: Drizzle ORM with PostgreSQL dialect
+- **Database**: PostgreSQL (Replit built-in, accessed via DATABASE_URL)
 - **Schema**: Defined in `shared/schema.ts` using Drizzle's table builders
 - **Validation**: Zod schemas generated from Drizzle schemas via drizzle-zod
 - **Storage**: Currently uses in-memory storage (`MemStorage`) with interface ready for database migration
 
-The schema currently includes a basic users table with id, username, and password fields.
+### Scripts
+
+- `npm run dev` - Start development server (Express + Vite HMR)
+- `npm run build` - Build for production (Vite frontend + esbuild backend)
+- `npm run start` - Start production server
+- `npm run db:push` - Push Drizzle schema to database
 
 ### Design Patterns
 
@@ -57,9 +67,8 @@ The schema currently includes a basic users table with id, username, and passwor
 ## External Dependencies
 
 ### Database
-- **PostgreSQL**: Configured via `DATABASE_URL` environment variable
+- **PostgreSQL**: Configured via `DATABASE_URL` environment variable (Replit built-in)
 - **Neon Database**: Uses `@neondatabase/serverless` for serverless PostgreSQL connections
-- **Session Store**: `connect-pg-simple` for PostgreSQL-based session management
 
 ### UI Libraries
 - **Radix UI**: Complete set of accessible, unstyled UI primitives
@@ -74,9 +83,10 @@ The schema currently includes a basic users table with id, username, and passwor
 - **ESBuild**: Production build bundling for server
 - **Replit Plugins**: Development banner, error overlay, and cartographer for Replit environment
 
-### Fonts
-- **Proxima Nova**: Primary brand font loaded via CDN
-- **Google Fonts**: Geist Mono and other supporting fonts
+### Deployment
+- **Target**: Autoscale
+- **Build**: `npm run build`
+- **Run**: `npm run start`
 
 ## Design Rules & Component Consistency
 
