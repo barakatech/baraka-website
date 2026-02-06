@@ -83,15 +83,12 @@ export const Footer = (): JSX.Element => {
           </a>
           
           <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">
-            <a 
-              href="https://getbaraka.com/get-started" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-white text-lg hover:text-white/80 transition-colors flex items-center gap-2"
-            >
+            <span className="text-white text-lg flex items-center gap-2">
               Investing with baraka Starts Here
-              <span className="text-white">→</span>
-            </a>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H18M18 12L15 9M18 12L15 15" stroke="white" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
             
             <div className="flex gap-3">
               <a 

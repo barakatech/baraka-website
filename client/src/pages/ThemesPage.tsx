@@ -103,27 +103,23 @@ export function ThemesPage() {
 
           <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
             {[
-              { id: 1, filterKey: "52-week-high", title: "52WK H", isNew: false },
-              { id: 2, filterKey: "52-week-low", title: "52WK L", isNew: false },
-              { id: 3, filterKey: "baraka-top-traded", title: "baraka top 10", isNew: false },
-              { id: 4, filterKey: "newly-listed", title: "Newly Listed", isNew: false },
+              { id: 1, filterKey: "52-week-high", title: "52WK H", icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6667 11.3334V6.00004M12.6667 6.00004L14.6667 8.00004M12.6667 6.00004L10.6667 8.00004M1.33333 10L6.66666 4.66671L8.66666 6.66671L12 3.33337" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+              { id: 2, filterKey: "52-week-low", title: "52WK L", icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 5.99996L7.33333 11.3333L9.33333 9.33329L12.6667 12.6666" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/><path d="M12.6667 4.00004L12.6667 9.33337M12.6667 9.33337L10.6667 7.33337M12.6667 9.33337L14.6667 7.33337" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+              { id: 3, filterKey: "baraka-top-traded", title: "baraka top 10", icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 5.99996L7.33333 11.3333L9.33333 9.33329L12.6667 12.6666" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/><path d="M12.6667 4.00004L12.6667 9.33337M12.6667 9.33337L10.6667 7.33337M12.6667 9.33337L14.6667 7.33337" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+              { id: 4, filterKey: "newly-listed", title: "Newly Listed", icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.0957 3.32324C9.55589 4.49924 10.2026 5.49951 11.0244 6.2832H11.0254C11.4286 6.66761 11.8798 7.00197 12.3662 7.27637L13.6484 7.99902L12.3662 8.72266C12.0028 8.92755 11.6582 9.16692 11.3379 9.43652L11.0254 9.7168C10.2032 10.5008 9.55703 11.5005 9.09668 12.6768L8.33203 14.6279L7.56836 12.6768C7.108 11.5009 6.46183 10.5008 5.63965 9.7168C5.3361 9.42732 5.00644 9.16692 4.65625 8.93945L4.2998 8.72363L3.01758 8L4.2998 7.27637L4.29883 7.27539C4.78324 7.00212 5.23489 6.66923 5.63965 6.2832C6.46188 5.49933 7.10806 4.4992 7.56836 3.32324L8.33203 1.37207L9.0957 3.32324Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/></svg> },
             ].map((filter) => (
               <button
                 key={filter.id}
                 onClick={() => handleTrendingFilterChange(filter.filterKey)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-colors whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-[16px] transition-colors whitespace-nowrap ${
                   activeTrendingFilter === filter.filterKey
                     ? "bg-white text-black font-semibold"
                     : "bg-[#1a1a1a] text-white/50 hover:bg-[#252525]"
                 }`}
                 style={{ fontFamily: '"Proxima Nova", sans-serif' }}
               >
+                <span>{filter.icon}</span>
                 {filter.title}
-                {filter.isNew && (
-                  <span className="bg-[#9fd] text-black text-[10px] font-semibold px-2 py-0.5 rounded-full ml-1">
-                    New
-                  </span>
-                )}
               </button>
             ))}
           </div>
@@ -214,21 +210,21 @@ export function ThemesPage() {
                             }}
                           />
                         </div>
-                        <div className="flex flex-col items-center gap-1 text-center w-full">
-                          <p className="text-white font-semibold text-[14px] leading-4 line-clamp-2 min-h-[32px]" style={{ fontFamily: '"Proxima Nova", sans-serif' }}>
+                        <div className="flex flex-col items-center gap-[8px] text-center w-full">
+                          <p className="text-white font-semibold text-[16px] leading-5 line-clamp-2" style={{ fontFamily: '"Proxima Nova", sans-serif' }}>
                             {event.name}
                           </p>
-                          <p className="text-white/30 text-sm leading-[18px]" style={{ fontFamily: '"Proxima Nova", sans-serif' }}>
+                          <p className="text-white/30 text-[16px] leading-[20px]" style={{ fontFamily: '"Proxima Nova", sans-serif' }}>
                             {event.date}
                           </p>
                         </div>
                       </div>
-                      <span 
-                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-lg bg-black"
+                      <span
+                        className="flex items-center gap-1 text-[16px] px-3 py-1 rounded-full bg-black"
                         style={{ fontFamily: '"Proxima Nova", sans-serif' }}
                       >
-                        <span className={`w-1 h-1 rounded-full ${event.type === "Dividends" ? "bg-[#0DDD00]" : "bg-[#439577]"}`} />
-                        <span className="text-white font-semibold text-xs">{event.type}</span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${event.type === "Dividends" ? "bg-[#0DDD00]" : "bg-[#439577]"}`} />
+                        <span className="text-white font-semibold text-[16px]">{event.type}</span>
                       </span>
                     </div>
                   </Link>
@@ -335,7 +331,7 @@ export function ThemesPage() {
                 return (
                   <Link key={sector.id} href={`/sector/${sectorSlug}`}>
                     <button
-                      className="bg-[#1a1a1a] text-white px-5 py-3 rounded-[14px] text-sm hover:bg-[#252525] transition-colors"
+                      className="bg-[#1a1a1a] text-white px-5 py-3 rounded-[14px] text-[16px] hover:bg-[#252525] transition-colors"
                       style={{ fontFamily: '"Proxima Nova", sans-serif' }}
                     >
                       {sectorName}

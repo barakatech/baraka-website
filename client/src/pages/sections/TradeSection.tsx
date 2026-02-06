@@ -26,7 +26,7 @@ export const TradeSection = ({ symbol, name, price = 0, styleImageUrl }: TradeSe
           <h2 className="text-white text-xl font-semibold">Trade</h2>
           <button 
             onClick={() => setShowDownloadPopup(true)}
-            className="flex items-center gap-2 bg-[#1a1a1a] text-white px-4 py-2 rounded-full text-sm hover:bg-[#252525] transition-colors"
+            className="flex items-center gap-2 bg-[#1a1a1a] text-white px-4 py-2 rounded-full text-[16px] hover:bg-[#252525] transition-colors"
           >
             Market Order
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,12 +61,12 @@ export const TradeSection = ({ symbol, name, price = 0, styleImageUrl }: TradeSe
             </div>
             <div>
               <p className="text-white font-semibold">{symbol}</p>
-              <p className="text-white/50 text-sm">{symbol}</p>
+              <p className="text-white/50 text-[16px]">{symbol}</p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-white font-semibold">${formatPrice(currentPrice)}</p>
-            <p className="text-white/50 text-sm">Latest price est.</p>
+            <p className="text-white/50 text-[16px]">Latest price est.</p>
           </div>
         </div>
 
@@ -81,7 +81,7 @@ export const TradeSection = ({ symbol, name, price = 0, styleImageUrl }: TradeSe
               placeholder="0"
             />
           </div>
-          <p className="text-white/50 text-sm mt-1">$1450 available to spent</p>
+          <p className="text-white/50 text-[16px] mt-1">$1450 available to spent</p>
         </div>
 
         <div className="bg-[#1a1a1a] rounded-[16px] p-4 mb-4 border-2 border-transparent focus-within:border-white transition-colors">
@@ -92,7 +92,7 @@ export const TradeSection = ({ symbol, name, price = 0, styleImageUrl }: TradeSe
             className="bg-transparent outline-none w-full text-white text-3xl font-medium"
             placeholder="0"
           />
-          <p className="text-white/50 text-sm mt-1">$1450 available to spent</p>
+          <p className="text-white/50 text-[16px] mt-1">$1450 available to spent</p>
         </div>
 
         <div className="bg-[#1a1a1a] rounded-[16px] px-4 py-3 flex items-center justify-between mb-4">
@@ -102,9 +102,10 @@ export const TradeSection = ({ symbol, name, price = 0, styleImageUrl }: TradeSe
 
         <button
           onClick={() => setShowDownloadPopup(true)}
-          className="w-full bg-white text-black py-4 rounded-full font-semibold text-lg hover:bg-white/90 transition-colors"
+          className="w-full bg-white text-black py-4 rounded-full text-lg hover:bg-white/90 transition-colors"
+          style={{ fontFamily: '"Proxima Nova Semibold", "Proxima Nova", sans-serif' }}
         >
-          Sign up To Trade
+          Sign Up to Trade
         </button>
       </div>
 

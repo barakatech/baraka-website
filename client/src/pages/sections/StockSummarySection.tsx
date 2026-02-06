@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { SearchIcon } from "lucide-react";
+import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -110,6 +110,7 @@ export const StockSummarySection = ({ instrumentDetails }: StockSummarySectionPr
   const [activePeriod, setActivePeriod] = useState("Today");
   const [animationKey, setAnimationKey] = useState(0);
   const [hoveredPrice, setHoveredPrice] = useState<number | null>(null);
+  const [searchValue, setSearchValue] = useState("");
 
   const handlePeriodChange = (period: string) => {
     setActivePeriod(period);
@@ -173,9 +174,9 @@ export const StockSummarySection = ({ instrumentDetails }: StockSummarySectionPr
   }, []);
 
   const breadcrumbItems = [
-    { label: "Home", isActive: false },
-    { label: "Stocks", isActive: false },
-    { label: companyName, isActive: true },
+    { label: "Home", isActive: false, href: "/" },
+    { label: "Stocks", isActive: false, href: "/themes" },
+    { label: companyName, isActive: true, href: null as string | null },
   ];
 
   return (
@@ -185,13 +186,21 @@ export const StockSummarySection = ({ instrumentDetails }: StockSummarySectionPr
           <nav className="inline-flex items-center gap-1">
             {breadcrumbItems.map((item, index) => (
               <div key={index} className="inline-flex items-center gap-1">
-                <div
-                  className={`[font-family:'Proxima_Nova-Regular',Helvetica] font-normal text-sm tracking-[0] leading-[18px] whitespace-nowrap ${
-                    item.isActive ? "text-white" : "text-[#ffffff80]"
-                  }`}
-                >
-                  {item.label}
-                </div>
+                {item.href ? (
+                  <Link href={item.href}>
+                    <span
+                      className="[font-family:'Proxima_Nova-Regular',Helvetica] font-normal text-[16px] tracking-[0] leading-[18px] whitespace-nowrap text-[#ffffff80] hover:text-white cursor-pointer transition-colors"
+                    >
+                      {item.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <span
+                    className="[font-family:'Proxima_Nova-Regular',Helvetica] font-normal text-[16px] tracking-[0] leading-[18px] whitespace-nowrap text-white"
+                  >
+                    {item.label}
+                  </span>
+                )}
                 {index < breadcrumbItems.length - 1 && (
                   <img
                     className="w-3 h-3"
@@ -203,13 +212,27 @@ export const StockSummarySection = ({ instrumentDetails }: StockSummarySectionPr
             ))}
           </nav>
 
-          <div className="relative w-full sm:w-[280px] md:w-[310px]">
-            <SearchIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 text-[#ffffff80]" />
+          <div className="relative w-full sm:w-[343px]">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6" viewBox="0 0 24 24" fill="none">
+              <path fillRule="evenodd" clipRule="evenodd" d="M3.25 10.4643C3.25 6.47995 6.47995 3.25 10.4643 3.25C14.4486 3.25 17.6786 6.47995 17.6786 10.4643C17.6786 14.4486 14.4486 17.6786 10.4643 17.6786C6.47995 17.6786 3.25 14.4486 3.25 10.4643ZM10.4643 2.25C5.92766 2.25 2.25 5.92766 2.25 10.4643C2.25 15.0009 5.92766 18.6786 10.4643 18.6786C12.5527 18.6786 14.459 17.8992 15.9084 16.6155L20.6464 21.3536L21.3536 20.6464L16.6155 15.9084C17.8992 14.459 18.6786 12.5527 18.6786 10.4643C18.6786 5.92766 15.0009 2.25 10.4643 2.25Z" fill="white" fillOpacity="0.3"/>
+            </svg>
             <Input
               type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search stock, companies"
-              className="w-full h-10 bg-[#191919] rounded-[33px] border-0 pl-10 pr-4 [font-family:'Proxima_Nova-Regular',Helvetica] font-normal text-[#ffffff80] text-sm tracking-[0] leading-[18px] placeholder:text-[#ffffff80]"
+              className="w-full h-[50px] bg-[#191919] rounded-[33px] border border-transparent pl-11 pr-12 [font-family:'Proxima_Nova-Regular',Helvetica] font-normal text-white text-[14px] tracking-[0] leading-[18px] placeholder:text-[#ffffff80] focus:outline-none focus:ring-0 focus:border-white"
             />
+            {searchValue && (
+              <button
+                onClick={() => setSearchValue("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
         </header>
 
@@ -308,7 +331,7 @@ export const StockSummarySection = ({ instrumentDetails }: StockSummarySectionPr
                 <div key={index} className="flex flex-col items-center gap-1">
                   <button
                     onClick={() => handlePeriodChange(period)}
-                    className={`font-caption-desktop-caption-r font-[number:var(--caption-desktop-caption-r-font-weight)] text-[length:var(--caption-desktop-caption-r-font-size)] tracking-[var(--caption-desktop-caption-r-letter-spacing)] leading-[var(--caption-desktop-caption-r-line-height)] whitespace-nowrap [font-style:var(--caption-desktop-caption-r-font-style)] transition-colors duration-200 ${
+                    className={`text-[14px] font-normal whitespace-nowrap transition-colors duration-200 ${
                       period === activePeriod ? "text-white" : "text-[#ffffff80] hover:text-white/70"
                     }`}
                   >
