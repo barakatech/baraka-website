@@ -9,6 +9,7 @@ import {
   RefinitivReport,
   BatchQuote,
   StockNewsItem,
+  SpotlightItem,
   fetchTopGainersLosers,
   fetchTrending,
   fetchPopular,
@@ -21,7 +22,8 @@ import {
   fetchHistoricalChartData,
   fetchRefinitivReport,
   fetchQuotesBatch,
-  fetchStockNews
+  fetchStockNews,
+  fetchSpotlight,
 } from './stocksApi';
 
 // Query keys
@@ -42,6 +44,7 @@ export const stocksKeys = {
   refinitivReport: (instrumentId: string) => [...stocksKeys.all, 'refinitiv-report', instrumentId] as const,
   stockNews: (symbol: string) => [...stocksKeys.all, 'stock-news', symbol] as const,
   quotesBatch: (symbols: string[]) => [...stocksKeys.all, 'quotes-batch', ...symbols] as const,
+  spotlight: () => ['content', 'spotlight'] as const,
   themes: {
     all: ['themes'] as const,
     stocks: (themeId: string) => [...stocksKeys.themes.all, themeId, 'stocks'] as const,
@@ -196,6 +199,17 @@ export function useQuotesBatch(symbols: string[], options?: Partial<UseQueryOpti
     queryFn: () => fetchQuotesBatch(symbols),
     staleTime: 5 * 60 * 1000,       // 5 minutes
     enabled: symbols.length > 0,
+    ...options,
+  });
+}
+
+// Hook for spotlight content
+export function useSpotlight(options?: Partial<UseQueryOptions<SpotlightItem[]>>) {
+  return useQuery({
+    queryKey: stocksKeys.spotlight(),
+    queryFn: fetchSpotlight,
+    staleTime: 5 * 60 * 1000,       // 5 minutes
+    refetchOnWindowFocus: true,
     ...options,
   });
 }
