@@ -8,6 +8,7 @@ import {
   SearchResponseSchema,
   InstrumentDetailsSchema,
 } from "../../shared/validators";
+import { safeValidateApiResponse } from "../../shared/validators/api";
 
 const router = Router();
 
@@ -60,7 +61,7 @@ router.get(
   }
 );
 
-// Search - 2 minute cache per query (using client facade API)
+// Search - 2 minute cache per query
 router.get(
   "/search",
   cacheMiddleware(dataCache, 120),
@@ -77,13 +78,12 @@ router.get(
       limit: "20",
     });
 
-    // Use client facade URL for search
     try {
       const headers: Record<string, string> = {
         'Authorization': `Bearer ${config.baraka.authToken}`
       };
 
-      const response = await fetch(`${config.baraka.clientFacadeUrl}${endpoint}`, { headers });
+      const response = await fetch(`${config.baraka.apiBaseUrl}${endpoint}`, { headers });
 
       if (!response.ok) {
         throw new Error(`API responded with ${response.status}`);
@@ -92,7 +92,7 @@ router.get(
       const data = await response.json();
 
       // Optional validation
-      const validationResult = require("../../shared/validators/api").safeValidateApiResponse(SearchResponseSchema, data);
+      const validationResult = safeValidateApiResponse(SearchResponseSchema, data);
       if (!validationResult.success) {
         console.error('Search validation error:', validationResult.error);
         console.warn('Search response validation failed, returning data anyway');
@@ -301,7 +301,7 @@ router.get(
 
     console.log('\n========== INSTRUMENT DETAILS API CALL (CACHE MISS) ==========');
     console.log('Symbol/ID:', symbolOrId);
-    console.log('Full endpoint:', `${config.baraka.clientFacadeUrl}${endpoint}`);
+    console.log('Full endpoint:', `${config.baraka.apiBaseUrl}${endpoint}`);
 
     try {
       const headers: Record<string, string> = {
@@ -309,7 +309,7 @@ router.get(
       };
 
       // Fetch instrument details
-      const response = await fetch(`${config.baraka.clientFacadeUrl}${endpoint}`, { headers });
+      const response = await fetch(`${config.baraka.apiBaseUrl}${endpoint}`, { headers });
       console.log('Response status:', response.status, response.statusText);
 
       if (!response.ok) {

@@ -9,6 +9,11 @@ import trackersRouter from "./trackers";
  * Register all API routes
  */
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check for k8s liveness/readiness probes
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok" });
+  });
+
   // Mount route modules
   app.use("/api/stocks", stocksRouter);
   app.use("/api/themes", themesRouter);
