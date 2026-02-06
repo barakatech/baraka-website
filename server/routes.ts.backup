@@ -1,0 +1,463 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { priceCache, dataCache, staticCache, cacheMiddleware } from "./cache";
+
+const BARAKA_API_BASE = process.env.BARAKA_API_BASE_URL || "https://api.dev.app.getbaraka.com";
+const BARAKA_API_AUTH_TOKEN = process.env.BARAKA_API_AUTH_TOKEN;
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Top gainers/losers - price data, 30 second cache
+  app.get(
+    "/api/stocks/top-gainers-losers",
+    cacheMiddleware(priceCache, 30),
+    async (req, res) => {
+      try {
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v1/discover/trackers/top-gainers-losers?allTypes=true&sortBy=NAME&sortType=ASC&stockType=EQUITY`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch gainers/losers:", error);
+
+        // Try to serve stale cache on error
+        const cachedData = priceCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Trending - 5 minute cache
+  app.get(
+    "/api/stocks/trending",
+    cacheMiddleware(dataCache, 300),
+    async (req, res) => {
+      try {
+        const response = await fetch(`${BARAKA_API_BASE}/v1/discover/trending?allTypes=true`);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch trending:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Popular - 5 minute cache
+  app.get(
+    "/api/stocks/popular",
+    cacheMiddleware(dataCache, 300),
+    async (req, res) => {
+      try {
+        const response = await fetch(`${BARAKA_API_BASE}/v1/discover/popular?allTypes=true`);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch popular:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Search - 2 minute cache per query
+  app.get(
+    "/api/stocks/search",
+    cacheMiddleware(dataCache, 120),
+    async (req, res) => {
+      try {
+        const query = req.query.query as string;
+        if (!query) {
+          return res.json({ data: { stocks: [] } });
+        }
+
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v2/finance_market/search?query=${encodeURIComponent(query)}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to search stocks:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Baraka top 10 - 15 minute cache
+  app.get(
+    "/api/stocks/baraka-top-10",
+    cacheMiddleware(dataCache, 900),
+    async (req, res) => {
+      try {
+        const response = await fetch(`${BARAKA_API_BASE}/v1/discover/trackers/baraka-top-traded`);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch baraka top 10:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // 52-Week High - 5 minute cache
+  app.get(
+    "/api/stocks/52-week-high",
+    cacheMiddleware(dataCache, 300),
+    async (req, res) => {
+      try {
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v1/discover/trackers/52-week-high?allTypes=true&sortBy=NAME&sortType=ASC&stockType=EQUITY`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch 52-week high:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // 52-Week Low - 5 minute cache
+  app.get(
+    "/api/stocks/52-week-low",
+    cacheMiddleware(dataCache, 300),
+    async (req, res) => {
+      try {
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v1/discover/trackers/52-week-low?allTypes=true&sortBy=NAME&sortType=ASC&stockType=EQUITY`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch 52-week low:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Newly Listed - 15 minute cache
+  app.get(
+    "/api/stocks/newly-listed",
+    cacheMiddleware(dataCache, 900),
+    async (req, res) => {
+      try {
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v1/discover/newly_added?allTypes=true&sortBy=NAME&sortType=ASC&stockType=EQUITY`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch newly listed:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Top Auto-Invest - 15 minute cache
+  app.get(
+    "/api/stocks/top-auto-invest",
+    cacheMiddleware(dataCache, 900),
+    async (req, res) => {
+      try {
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v1/discover/top-auto-invest?allTypes=true&sortBy=NAME&sortType=ASC&stockType=EQUITY`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch top auto-invest:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Top ESG Stocks - 1 hour cache
+  app.get(
+    "/api/stocks/top-esg",
+    cacheMiddleware(staticCache, 3600),
+    async (req, res) => {
+      try {
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v1/discover/top-esg?allTypes=true&key=totalESGScore`
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch top ESG:", error);
+
+        const cachedData = staticCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Theme stocks - 1 hour cache
+  app.get(
+    "/api/themes/:themeId/stocks",
+    cacheMiddleware(staticCache, 3600),
+    async (req, res) => {
+      try {
+        const { themeId } = req.params;
+        const response = await fetch(`${BARAKA_API_BASE}/v1/themes/${themeId}/stocks`);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch theme stocks:", error);
+
+        const cachedData = staticCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Sectors - 24 hour cache (sectors rarely change)
+  app.get(
+    "/api/sectors",
+    cacheMiddleware(staticCache, 86400),
+    async (req, res) => {
+      try {
+        const response = await fetch(`${BARAKA_API_BASE}/v1/themes?type=sector`);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch sectors:", error);
+
+        const cachedData = staticCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Trackers - 24 hour cache (trackers rarely change)
+  app.get(
+    "/api/trackers",
+    cacheMiddleware(staticCache, 86400),
+    async (req, res) => {
+      try {
+        const response = await fetch(`${BARAKA_API_BASE}/v1/discover/trackers`);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch trackers:", error);
+
+        const cachedData = staticCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Themes - 24 hour cache (themes rarely change)
+  app.get(
+    "/api/themes",
+    cacheMiddleware(staticCache, 86400),
+    async (req, res) => {
+      try {
+        const response = await fetch(`${BARAKA_API_BASE}/v1/themes?type=default`);
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch themes:", error);
+
+        const cachedData = staticCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  // Instrument details - 5 minute cache
+  app.get(
+    "/api/stocks/:symbolOrId/details",
+    cacheMiddleware(dataCache, 300),
+    async (req, res) => {
+      try {
+        const { symbolOrId } = req.params;
+        const headers: Record<string, string> = {};
+        if (BARAKA_API_AUTH_TOKEN) {
+          headers['Authorization'] = `Bearer ${BARAKA_API_AUTH_TOKEN}`;
+        }
+
+        const response = await fetch(
+          `${BARAKA_API_BASE}/v2/instrument-details?symbolOrId=${encodeURIComponent(symbolOrId)}`,
+          { headers }
+        );
+
+        if (!response.ok) {
+          throw new Error(`API responded with ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+      } catch (error) {
+        console.error("Failed to fetch instrument details:", error);
+
+        const cachedData = dataCache.get(req.originalUrl);
+        if (cachedData) {
+          console.log("Serving stale cache due to error");
+          return res.json(cachedData);
+        }
+
+        res.status(500).json({ error: "Failed to fetch data" });
+      }
+    }
+  );
+
+  const httpServer = createServer(app);
+
+  return httpServer;
+}

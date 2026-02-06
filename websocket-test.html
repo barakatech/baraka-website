@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Ticker Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .section {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #404040;
+        }
+        h1, h2 {
+            margin-top: 0;
+            color: #4ec9b0;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        .status.connected {
+            background: #0e639c;
+            color: white;
+        }
+        .status.disconnected {
+            background: #f48771;
+            color: white;
+        }
+        .status.connecting {
+            background: #cca700;
+            color: white;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 3px;
+            background: #0e639c;
+            color: white;
+            cursor: pointer;
+            font-family: monospace;
+        }
+        button:hover {
+            background: #1177bb;
+        }
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        input {
+            padding: 8px;
+            background: #3c3c3c;
+            border: 1px solid #555;
+            color: #d4d4d4;
+            border-radius: 3px;
+            font-family: monospace;
+            width: 400px;
+        }
+        .log {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 3px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        .log-entry {
+            padding: 5px;
+            margin: 2px 0;
+            border-left: 3px solid #555;
+            padding-left: 10px;
+        }
+        .log-entry.info {
+            border-left-color: #4ec9b0;
+        }
+        .log-entry.error {
+            border-left-color: #f48771;
+            color: #f48771;
+        }
+        .log-entry.success {
+            border-left-color: #89d185;
+            color: #89d185;
+        }
+        .log-entry.ticker {
+            border-left-color: #dcdcaa;
+            color: #dcdcaa;
+        }
+        .ticker-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .ticker-card {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid #404040;
+        }
+        .ticker-card .instrument {
+            font-weight: bold;
+            color: #4ec9b0;
+            margin-bottom: 5px;
+        }
+        .ticker-card .price {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .ticker-card .price.up {
+            color: #89d185;
+        }
+        .ticker-card .price.down {
+            color: #f48771;
+        }
+        .ticker-card .details {
+            font-size: 11px;
+            color: #858585;
+        }
+        .timestamp {
+            color: #858585;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WebSocket Stock Ticker Test</h1>
+
+        <div class="section">
+            <h2>Connection</h2>
+            <div id="status" class="status disconnected">Disconnected</div>
+
+            <div style="margin: 10px 0;">
+                <label>Environment:</label>
+                <select id="environment" style="margin-left: 10px; padding: 8px; background: #3c3c3c; border: 1px solid #555; color: #d4d4d4; border-radius: 3px;">
+                    <option value="dev">Development (ws://b-agent.dev.app.getbaraka.com/api)</option>
+                    <option value="prod">Production (wss://b-agent.production.axasbjeg.com/api)</option>
+                </select>
+            </div>
+
+            <div style="margin: 10px 0;">
+                <label>
+                    <input type="checkbox" id="mockMode" style="width: auto;">
+                    Enable Mock Mode (Generate fake ticker data for testing)
+                </label>
+            </div>
+
+            <div style="margin: 10px 0;">
+                <label>Token:</label>
+                <input type="text" id="token" value="getbaraka_token_8jshyj_2jfujJ_28bns3_XXX_website" placeholder="Enter token">
+            </div>
+
+            <button id="connect">Connect</button>
+            <button id="disconnect" disabled>Disconnect</button>
+            <button id="clearLog">Clear Log</button>
+        </div>
+
+        <div class="section">
+            <h2>Subscribe to Ticker</h2>
+            <div style="margin: 10px 0;">
+                <label>Instrument ID:</label>
+                <input type="text" id="instrumentId" placeholder="e.g., 3073d055-2f52-491a-99a6-b8ece30239ff">
+            </div>
+            <button id="subscribe">Subscribe</button>
+            <button id="unsubscribe">Unsubscribe</button>
+
+            <div style="margin-top: 10px;">
+                <strong>Common Test IDs:</strong>
+                <div style="margin-top: 5px;">
+                    <button onclick="document.getElementById('instrumentId').value='3073d055-2f52-491a-99a6-b8ece30239ff'">ID 1</button>
+                    <button onclick="document.getElementById('instrumentId').value='39e0cc10-a4bc-4038-97ed-cd92b7175ca2'">ID 2</button>
+                    <button onclick="document.getElementById('instrumentId').value='92485149-d8d8-4ee3-8e97-114fd11f6745'">ID 3</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Live Ticker Data</h2>
+            <div id="tickerData" class="ticker-data">
+                <div style="color: #858585;">No data yet. Subscribe to instruments to see live updates.</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Message Log</h2>
+            <div id="log" class="log">
+                <div class="log-entry info">Ready to connect...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let messageCount = 0;
+        let tickerData = new Map();
+        let subscriptions = new Set();
+        let mockIntervals = new Map();
+
+        const statusEl = document.getElementById('status');
+        const logEl = document.getElementById('log');
+        const tickerDataEl = document.getElementById('tickerData');
+        const connectBtn = document.getElementById('connect');
+        const disconnectBtn = document.getElementById('disconnect');
+        const subscribeBtn = document.getElementById('subscribe');
+        const unsubscribeBtn = document.getElementById('unsubscribe');
+        const environmentSelect = document.getElementById('environment');
+        const tokenInput = document.getElementById('token');
+        const instrumentIdInput = document.getElementById('instrumentId');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function updateStatus(status, className) {
+            statusEl.textContent = status;
+            statusEl.className = `status ${className}`;
+        }
+
+        function getWebSocketUrl() {
+            const env = environmentSelect.value;
+            const token = tokenInput.value.trim();
+            const baseUrl = env === 'dev'
+                ? 'ws://b-agent.dev.app.getbaraka.com/api'
+                : 'wss://b-agent.production.axasbjeg.com/api';
+
+            return token ? `${baseUrl}?access_token=${token}` : baseUrl;
+        }
+
+        function generateHash() {
+            return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        function updateTickerDisplay() {
+            if (tickerData.size === 0) {
+                tickerDataEl.innerHTML = '<div style="color: #858585;">No data yet. Subscribe to instruments to see live updates.</div>';
+                return;
+            }
+
+            tickerDataEl.innerHTML = '';
+            tickerData.forEach((data, instrumentId) => {
+                const card = document.createElement('div');
+                card.className = 'ticker-card';
+
+                const priceClass = data.changePercent > 0 ? 'up' : data.changePercent < 0 ? 'down' : '';
+                const priceArrow = data.changePercent > 0 ? '📈' : data.changePercent < 0 ? '📉' : '➡️';
+
+                card.innerHTML = `
+                    <div class="instrument">${data.symbol || instrumentId}</div>
+                    <div class="price ${priceClass}">${priceArrow} $${data.price?.toFixed(2) || 'N/A'}</div>
+                    <div class="details">
+                        Change: ${data.changePercent?.toFixed(2) || '0.00'}% (${data.changePrice?.toFixed(2) || '0.00'})
+                    </div>
+                    <div class="details">
+                        Volume: ${data.volume?.toLocaleString() || 'N/A'}
+                    </div>
+                    <div class="details">
+                        Close: $${data.closePrice?.toFixed(2) || 'N/A'}
+                    </div>
+                    <div class="timestamp">
+                        Last update: ${new Date(data.timestamp || Date.now()).toLocaleTimeString()}
+                    </div>
+                `;
+                tickerDataEl.appendChild(card);
+            });
+        }
+
+        connectBtn.addEventListener('click', () => {
+            const url = getWebSocketUrl();
+            log(`Connecting to: ${url.replace(/access_token=[^&]+/, 'access_token=***')}`, 'info');
+            updateStatus('Connecting...', 'connecting');
+
+            try {
+                ws = new WebSocket(url);
+
+                ws.onopen = () => {
+                    log('✅ Connected successfully!', 'success');
+                    updateStatus('Connected', 'connected');
+                    connectBtn.disabled = true;
+                    disconnectBtn.disabled = false;
+                    messageCount = 0;
+
+                    // Resubscribe to all instruments
+                    subscriptions.forEach(instrumentId => {
+                        sendSubscription(instrumentId, true);
+                    });
+                };
+
+                ws.onmessage = async (event) => {
+                    messageCount++;
+
+                    let data;
+                    if (event.data instanceof Blob) {
+                        data = await event.data.text();
+                        log(`📦 Received Blob message (${event.data.size} bytes), converted to text`, 'info');
+                    } else {
+                        data = event.data;
+                    }
+
+                    try {
+                        const message = JSON.parse(data);
+
+                        if (message.type === 'PING') {
+                            ws.send(JSON.stringify({ type: 'PONG' }));
+                            log('🏓 PING received, sent PONG', 'info');
+                        } else if (message.type === 'PONG') {
+                            // Silent
+                        } else if (message.type === 'ticker') {
+                            const instrumentId = message.instrumentId || message.symbol;
+                            log(`🎯 TICKER UPDATE #${messageCount}: ${instrumentId} - Price: $${message.price}, Change: ${message.changePercent?.toFixed(2)}%`, 'ticker');
+
+                            // Update ticker data
+                            tickerData.set(instrumentId, message);
+                            updateTickerDisplay();
+                        } else {
+                            log(`📨 Message #${messageCount}: ${JSON.stringify(message, null, 2)}`, 'info');
+                        }
+                    } catch (error) {
+                        log(`❌ Failed to parse message: ${error.message}`, 'error');
+                        log(`Raw data: ${data}`, 'error');
+                    }
+                };
+
+                ws.onerror = (error) => {
+                    log(`❌ WebSocket error: ${error}`, 'error');
+                    updateStatus('Error', 'disconnected');
+                };
+
+                ws.onclose = (event) => {
+                    log(`Connection closed: ${event.code} - ${event.reason}`, 'info');
+                    updateStatus('Disconnected', 'disconnected');
+                    connectBtn.disabled = false;
+                    disconnectBtn.disabled = true;
+                };
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+                updateStatus('Error', 'disconnected');
+            }
+        });
+
+        disconnectBtn.addEventListener('click', () => {
+            if (ws) {
+                log('Disconnecting...', 'info');
+                ws.close(1000, 'User disconnected');
+                ws = null;
+            }
+        });
+
+        function sendSubscription(instrumentId, isSubscribe) {
+            const mockMode = document.getElementById('mockMode').checked;
+
+            if (mockMode) {
+                if (isSubscribe) {
+                    startMockUpdates(instrumentId);
+                    log(`🎭 MOCK MODE: Subscribed to ${instrumentId}`, 'success');
+                } else {
+                    stopMockUpdates(instrumentId);
+                    log(`🎭 MOCK MODE: Unsubscribed from ${instrumentId}`, 'success');
+                }
+                return;
+            }
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                log('❌ Cannot subscribe: WebSocket not connected', 'error');
+                return;
+            }
+
+            const message = {
+                type: 'ticker',
+                payload: {
+                    ticker: instrumentId,
+                    instrumentId: instrumentId,
+                    isSubscribe: isSubscribe
+                },
+                hash: generateHash()
+            };
+
+            ws.send(JSON.stringify(message));
+            log(`${isSubscribe ? '📥' : '📤'} ${isSubscribe ? 'Subscribed to' : 'Unsubscribed from'}: ${instrumentId}`, 'success');
+        }
+
+        function startMockUpdates(instrumentId) {
+            if (mockIntervals.has(instrumentId)) {
+                return;
+            }
+
+            let basePrice = 100 + Math.random() * 400;
+            const closePrice = basePrice;
+
+            // Send initial update
+            const initialData = {
+                symbol: instrumentId.substring(0, 8),
+                instrumentId: instrumentId,
+                price: basePrice,
+                closePrice: closePrice,
+                changePrice: 0,
+                changePercent: 0,
+                volume: Math.floor(1000000 + Math.random() * 5000000),
+                timestamp: Date.now()
+            };
+
+            tickerData.set(instrumentId, initialData);
+            updateTickerDisplay();
+            log(`🎭 MOCK: Initial price for ${instrumentId}: $${basePrice.toFixed(2)}`, 'ticker');
+
+            // Update every 2 seconds
+            const interval = setInterval(() => {
+                const changePercent = (Math.random() - 0.5) * 4;
+                const changePrice = basePrice * (changePercent / 100);
+                const newPrice = basePrice + changePrice;
+                basePrice = newPrice;
+
+                const data = {
+                    symbol: instrumentId.substring(0, 8),
+                    instrumentId: instrumentId,
+                    price: newPrice,
+                    closePrice: closePrice,
+                    changePrice: newPrice - closePrice,
+                    changePercent: ((newPrice - closePrice) / closePrice) * 100,
+                    volume: Math.floor(1000000 + Math.random() * 5000000),
+                    timestamp: Date.now()
+                };
+
+                tickerData.set(instrumentId, data);
+                updateTickerDisplay();
+                log(`🎭 MOCK TICKER: ${instrumentId} - Price: $${newPrice.toFixed(2)}, Change: ${data.changePercent.toFixed(2)}%`, 'ticker');
+            }, 2000);
+
+            mockIntervals.set(instrumentId, interval);
+        }
+
+        function stopMockUpdates(instrumentId) {
+            const interval = mockIntervals.get(instrumentId);
+            if (interval) {
+                clearInterval(interval);
+                mockIntervals.delete(instrumentId);
+                tickerData.delete(instrumentId);
+                updateTickerDisplay();
+            }
+        }
+
+        subscribeBtn.addEventListener('click', () => {
+            const instrumentId = instrumentIdInput.value.trim();
+            if (!instrumentId) {
+                log('❌ Please enter an instrument ID', 'error');
+                return;
+            }
+
+            subscriptions.add(instrumentId);
+            sendSubscription(instrumentId, true);
+        });
+
+        unsubscribeBtn.addEventListener('click', () => {
+            const instrumentId = instrumentIdInput.value.trim();
+            if (!instrumentId) {
+                log('❌ Please enter an instrument ID', 'error');
+                return;
+            }
+
+            subscriptions.delete(instrumentId);
+            tickerData.delete(instrumentId);
+            updateTickerDisplay();
+            sendSubscription(instrumentId, false);
+        });
+
+        document.getElementById('clearLog').addEventListener('click', () => {
+            logEl.innerHTML = '<div class="log-entry info">Log cleared.</div>';
+            messageCount = 0;
+        });
+    </script>
+</body>
+</html>

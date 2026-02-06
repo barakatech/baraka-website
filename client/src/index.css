@@ -1,0 +1,299 @@
+@import url('https://fonts.cdnfonts.com/css/proxima-nova-2');
+
+@tailwind components;
+@tailwind utilities;
+
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer components {
+  .all-\[unset\] {
+    all: unset;
+  }
+}
+
+:root {
+  --body-1-font-family: "Proxima Nova", Helvetica;
+  --body-1-font-size: 16px;
+  --body-1-font-style: normal;
+  --body-1-font-weight: 400;
+  --body-1-letter-spacing: 0px;
+  --body-1-line-height: 20px;
+  --body-3-font-family: "Proxima Nova", Helvetica;
+  --body-3-font-size: 14px;
+  --body-3-font-style: normal;
+  --body-3-font-weight: 400;
+  --body-3-letter-spacing: 0px;
+  --body-3-line-height: normal;
+  --body-4-font-family: "Proxima Nova", Helvetica;
+  --body-4-font-size: 14px;
+  --body-4-font-style: normal;
+  --body-4-font-weight: 400;
+  --body-4-letter-spacing: 0px;
+  --body-4-line-height: 16px;
+  --caption-desktop-caption-r-font-family: "Proxima Nova", Helvetica;
+  --caption-desktop-caption-r-font-size: 12px;
+  --caption-desktop-caption-r-font-style: normal;
+  --caption-desktop-caption-r-font-weight: 400;
+  --caption-desktop-caption-r-letter-spacing: 0px;
+  --caption-desktop-caption-r-line-height: normal;
+  --caption-mobile-caption-r-font-family: "Proxima Nova", Helvetica;
+  --caption-mobile-caption-r-font-size: 11px;
+  --caption-mobile-caption-r-font-style: normal;
+  --caption-mobile-caption-r-font-weight: 400;
+  --caption-mobile-caption-r-letter-spacing: 0px;
+  --caption-mobile-caption-r-line-height: normal;
+  --dark-backgrounddark-contentblack: rgba(0, 0, 0, 1);
+  --footnote-2-font-family: "Proxima Nova", Helvetica;
+  --footnote-2-font-size: 12px;
+  --footnote-2-font-style: normal;
+  --footnote-2-font-weight: 400;
+  --footnote-2-letter-spacing: 0px;
+  --footnote-2-line-height: 12px;
+  --h4-font-family: "Proxima Nova", Helvetica;
+  --h4-font-size: 20px;
+  --h4-font-style: normal;
+  --h4-font-weight: 400;
+  --h4-letter-spacing: 0px;
+  --h4-line-height: normal;
+  --heading-desktop-h2-medium-font-family: "Proxima Nova", Helvetica;
+  --heading-desktop-h2-medium-font-size: 34px;
+  --heading-desktop-h2-medium-font-style: normal;
+  --heading-desktop-h2-medium-font-weight: 500;
+  --heading-desktop-h2-medium-letter-spacing: 0px;
+  --heading-desktop-h2-medium-line-height: 38px;
+  --heading-desktop-h3-medium-font-family: "Proxima Nova", Helvetica;
+  --heading-desktop-h3-medium-font-size: 24px;
+  --heading-desktop-h3-medium-font-style: normal;
+  --heading-desktop-h3-medium-font-weight: 500;
+  --heading-desktop-h3-medium-letter-spacing: 0px;
+  --heading-desktop-h3-medium-line-height: 28px;
+  --heading-desktop-h4-medium-font-family: "Proxima Nova", Helvetica;
+  --heading-desktop-h4-medium-font-size: 20px;
+  --heading-desktop-h4-medium-font-style: normal;
+  --heading-desktop-h4-medium-font-weight: 500;
+  --heading-desktop-h4-medium-letter-spacing: 0px;
+  --heading-desktop-h4-medium-line-height: 24px;
+  --heading-desktop-h4-regular-font-family: "Proxima Nova", Helvetica;
+  --heading-desktop-h4-regular-font-size: 20px;
+  --heading-desktop-h4-regular-font-style: normal;
+  --heading-desktop-h4-regular-font-weight: 400;
+  --heading-desktop-h4-regular-letter-spacing: 0px;
+  --heading-desktop-h4-regular-line-height: 24px;
+  --heading-desktop-h5-medium-font-family: "Proxima Nova", Helvetica;
+  --heading-desktop-h5-medium-font-size: 16px;
+  --heading-desktop-h5-medium-font-style: normal;
+  --heading-desktop-h5-medium-font-weight: 500;
+  --heading-desktop-h5-medium-letter-spacing: 0px;
+  --heading-desktop-h5-medium-line-height: 20px;
+  --heading-desktop-h5-regular-font-family: "Proxima Nova", Helvetica;
+  --heading-desktop-h5-regular-font-size: 16px;
+  --heading-desktop-h5-regular-font-style: normal;
+  --heading-desktop-h5-regular-font-weight: 400;
+  --heading-desktop-h5-regular-letter-spacing: 0px;
+  --heading-desktop-h5-regular-line-height: 20px;
+  --light-contentblack-30: rgba(0, 0, 0, 0.3);
+  --solidbaraka-green: rgba(13, 221, 0, 1);
+  --solidblack: rgba(0, 0, 0, 1);
+  --solidgreen: rgba(13, 221, 0, 1);
+  --solidred: rgba(255, 51, 23, 1);
+}
+
+:root {
+  --animate-spin: spin 1s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s var(--animation-delay, 0s) ease forwards;
+}
+
+.animate-fade-up {
+  animation: fade-up 1s var(--animation-delay, 0s) ease forwards;
+}
+
+.animate-marquee {
+  animation: marquee var(--duration) infinite linear;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration) linear infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 8s infinite;
+}
+
+.animate-spin {
+  animation: var(--animate-spin);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes image-glow {
+  0% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+  }
+
+  10% {
+    opacity: 0.7;
+    animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+  }
+
+  to {
+    opacity: 0.4;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  90%,
+  to {
+    background-position: calc(-100% - var(--shimmer-width)) 0;
+  }
+
+  30%,
+  60% {
+    background-position: calc(100% + var(--shimmer-width)) 0;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(0);
+  }
+
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  0% {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --card: transparent;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --card: transparent;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

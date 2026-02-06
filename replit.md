@@ -1,0 +1,111 @@
+# Baraka Investment Platform
+
+## Overview
+
+This is a modern investment platform web application built with React and Express. The app provides stock market information, investment themes, news articles, and detailed stock analysis pages. It features a dark-themed UI inspired by the Baraka brand, with pages for browsing investment themes, viewing detailed stock information, and reading financial news.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Frontend Architecture
+
+- **Framework**: React 18 with TypeScript
+- **Routing**: Wouter (lightweight router alternative to React Router)
+- **State Management**: TanStack React Query for server state and data fetching
+- **Styling**: Tailwind CSS with custom CSS variables for theming
+- **UI Components**: shadcn/ui component library built on Radix UI primitives
+- **Build Tool**: Vite with React plugin
+
+The frontend follows a page-based architecture with:
+- Pages located in `client/src/pages/`
+- Reusable sections in `client/src/pages/sections/`
+- UI components in `client/src/components/ui/`
+- Custom hooks in `client/src/hooks/`
+
+### Backend Architecture
+
+- **Framework**: Express.js with TypeScript
+- **HTTP Server**: Node.js native HTTP server
+- **Development**: Vite middleware integration for hot module replacement
+- **Static Assets**: Served from `attached_assets/` directory
+
+The server uses a clean separation pattern:
+- `server/index.ts` - Main entry point and middleware setup
+- `server/routes.ts` - API route definitions
+- `server/storage.ts` - Data storage interface (currently in-memory)
+- `server/vite.ts` - Development server configuration
+
+### Data Layer
+
+- **ORM**: Drizzle ORM with PostgreSQL dialect
+- **Schema**: Defined in `shared/schema.ts` using Drizzle's table builders
+- **Validation**: Zod schemas generated from Drizzle schemas via drizzle-zod
+- **Storage**: Currently uses in-memory storage (`MemStorage`) with interface ready for database migration
+
+The schema currently includes a basic users table with id, username, and password fields.
+
+### Design Patterns
+
+- **Path Aliases**: Uses `@/` for client source, `@shared/` for shared code
+- **Component Pattern**: Functional components with TypeScript, using forwardRef for UI primitives
+- **API Pattern**: RESTful endpoints prefixed with `/api`
+- **Query Pattern**: React Query with custom query function wrapper for error handling
+
+## External Dependencies
+
+### Database
+- **PostgreSQL**: Configured via `DATABASE_URL` environment variable
+- **Neon Database**: Uses `@neondatabase/serverless` for serverless PostgreSQL connections
+- **Session Store**: `connect-pg-simple` for PostgreSQL-based session management
+
+### UI Libraries
+- **Radix UI**: Complete set of accessible, unstyled UI primitives
+- **Lucide React**: Icon library
+- **Embla Carousel**: Carousel/slider functionality
+- **React Day Picker**: Date picker component
+- **Vaul**: Drawer component
+- **CMDK**: Command menu component
+
+### Development Tools
+- **Drizzle Kit**: Database migration and schema management
+- **ESBuild**: Production build bundling for server
+- **Replit Plugins**: Development banner, error overlay, and cartographer for Replit environment
+
+### Fonts
+- **Proxima Nova**: Primary brand font loaded via CDN
+- **Google Fonts**: Geist Mono and other supporting fonts
+
+## Design Rules & Component Consistency
+
+### Stock Component Styles
+**IMPORTANT: When changing a component style in one place, update it consistently across ALL places.**
+
+There are TWO standardized stock display styles:
+
+1. **Compact Card (StockCompactCard)** - For horizontal scrollable rows
+   - Used in: Trending section, Popular Stocks horizontal row
+   - Dimensions: 127px × 88px
+   - Background: #191919, hover: #252525
+   - Border radius: 16px
+   - Logo: 16px × 16px black circle background
+   - Layout: Symbol top-left, logo top-right, price bottom-left, percentage bottom-right
+
+2. **Full Width Cell (StockCell)** - For vertical stock lists
+   - Used in: TrendingToday (Gainers/Losers), SimilarStocks, ThemeDetail stock list
+   - Height: 72px (48px inner content + 12px top/bottom padding)
+   - Background: #191919, hover: #252525
+   - Border radius: 18px
+   - Logo: 48px × 48px black circle background
+   - Padding: 12px top, 16px left/right
+   - Layout: Logo left, name/symbol center, price/percentage right
+   - Arrow icons: Use image assets (/attached_assets/Icons_Arrows_*.png)
+
+### UI Element Consistency
+- Stock logo circles: Always use black background (#000)
+- Positive change: Green #0DDD00
+- Negative change: Red #FF3317
+- News cards: #191919 background, 32px outer radius, no default border, 1.5px border on hover
+- Load More buttons: White background, no border
