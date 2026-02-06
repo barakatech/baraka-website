@@ -84,13 +84,13 @@ export function StockCell({
           <p className={`text-white font-semibold text-[16px] text-right leading-[20px] transition-all ${isLoading ? 'opacity-70' : ''}`}>
             ${displayPrice.toFixed(2)}
           </p>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <img
               src={isPositive ? "/attached_assets/Icons_Arrows_1769066937907.png" : "/attached_assets/Icons_Arrows_red_1769066937907.png"}
               alt={isPositive ? "up" : "down"}
               className="w-3 h-3"
             />
-            <span className={`text-xs font-semibold leading-[12px] transition-all ${isPositive ? 'text-[#0DDD00]' : 'text-[#FF3317]'} ${isLoading ? 'opacity-70' : ''}`}>
+            <span className={`text-[16px] font-semibold leading-[20px] transition-all ${isPositive ? 'text-[#0DDD00]' : 'text-[#FF3317]'} ${isLoading ? 'opacity-70' : ''}`}>
               {Math.abs(displayChangePercent).toFixed(2)}%
             </span>
             <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isPulsing ? (isPositive ? 'bg-[#0DDD00]' : 'bg-[#FF3317]') : 'bg-transparent'}`} />

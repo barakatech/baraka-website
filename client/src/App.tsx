@@ -27,6 +27,9 @@ const NewsListingPage = lazy(() =>
 const NewsDetailPage = lazy(() =>
   import("@/pages/NewsDetailPage").then(m => ({ default: m.NewsDetailPage }))
 );
+const NewsListingPageV2 = lazy(() =>
+  import("@/pages/NewsListingPageV2").then(m => ({ default: m.NewsListingPageV2 }))
+);
 const NotFound = lazy(() => import("@/pages/not-found"));
 
 function Router() {
@@ -39,6 +42,7 @@ function Router() {
         <Route path="/sector/:sectorId" component={SectorDetailPage} />
         <Route path="/stocks/:slug" component={DetailedStockPage} />
         <Route path="/news" component={NewsListingPage} />
+        <Route path="/news-v2" component={NewsListingPageV2} />
         <Route path="/news/:id" component={NewsDetailPage} />
         {/* Fallback to 404 */}
         <Route component={NotFound} />

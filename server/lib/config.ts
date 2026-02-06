@@ -6,8 +6,6 @@ export const config = {
   baraka: {
     // Legacy API for discover endpoints
     apiBaseUrl: process.env.BARAKA_API_BASE_URL || "https://api.production.app.axasbjeg.com",
-    // New b-client-facade API for instrument-details and search
-    clientFacadeUrl: process.env.BARAKA_CLIENT_FACADE_URL || "https://services.production.app.getbaraka.com/b-client-facade",
     // External b-os API for stock page data
     osExternalUrl: process.env.BARAKA_OS_EXTERNAL_URL || "https://services.production.app.getbaraka.com/b-os-external/api",
     authToken: process.env.BARAKA_API_AUTH_TOKEN,

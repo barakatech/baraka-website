@@ -107,7 +107,7 @@ Drizzle ORM configured for PostgreSQL (Neon serverless):
 ## Environment Variables
 ```bash
 BARAKA_API_BASE_URL=https://api.production.app.axasbjeg.com # Legacy API for discover endpoints
-BARAKA_CLIENT_FACADE_URL=https://services.production.app.getbaraka.com/b-client-facade # New API for instrument-details and search
+BARAKA_OS_EXTERNAL_URL=https://services.production.app.getbaraka.com/b-os-external/api # External b-os API for stock page data
 BARAKA_API_AUTH_TOKEN=your_auth_token_here
 NODE_ENV=development|production
 DATABASE_URL=postgresql://... # (optional, for future DB features)
@@ -116,7 +116,7 @@ PORT=9000 # Server port (default 9000)
 
 **Note:** The application uses two different API base URLs:
 - `BARAKA_API_BASE_URL` - Used for discover endpoints (trending, popular, gainers/losers, etc.)
-- `BARAKA_CLIENT_FACADE_URL` - Used for instrument-details and search endpoints
+- `BARAKA_OS_EXTERNAL_URL` - Used for stock page data (instrument details, search, etc.)
 
 ## Design System
 

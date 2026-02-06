@@ -84,12 +84,26 @@ export function SpotlightCarousel() {
         <div className="absolute inset-0 bg-black/50" />
 
         <div className={`absolute bottom-[52px] left-4 flex flex-col gap-3 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-          <h2 className="text-[28px] font-semibold text-white leading-7" style={{ fontFamily: '"Proxima Nova", sans-serif' }}>
+          <svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clipPath="url(#clip0_14076_18379)">
+              <path d="M15.1895 15.1885L0.577591 0.57666" stroke="#0DDD00" strokeWidth="0.727272" strokeMiterlimit="10"/>
+              <path d="M15.189 5.44727L15.189 15.1885L5.44772 15.1885" stroke="#0DDD00" strokeWidth="0.727272" strokeMiterlimit="10"/>
+            </g>
+            <defs>
+              <clipPath id="clip0_14076_18379">
+                <rect width="16" height="16" fill="white" transform="translate(16) rotate(90)"/>
+              </clipPath>
+            </defs>
+          </svg>
+          <h2 className="text-[32px] font-semibold text-white leading-8" style={{ fontFamily: '"Proxima Nova", sans-serif' }}>
             {news.title}
           </h2>
+          <p className="text-[16px] text-white/70" style={{ fontFamily: '"Proxima Nova", sans-serif' }}>
+            {news.description}
+          </p>
           <div className="flex items-center gap-2 flex-wrap">
             <span
-              className="backdrop-blur-[12px] bg-white/30 text-white text-xs px-3 py-1 rounded-full font-semibold"
+              className="backdrop-blur-[12px] bg-white/30 text-white text-[16px] px-3 py-1 rounded-full font-semibold"
               style={{ fontFamily: '"Proxima Nova", sans-serif' }}
             >
               {news.category}
@@ -97,7 +111,7 @@ export function SpotlightCarousel() {
             {news.stocks.map((stock) => (
               <span
                 key={stock.symbol}
-                className="backdrop-blur-[12px] bg-white/30 text-white text-xs px-2 py-1 rounded-full font-semibold flex items-center gap-1"
+                className="backdrop-blur-[12px] bg-white/30 text-white text-[16px] px-2 py-1 rounded-full font-semibold flex items-center gap-1"
                 style={{ fontFamily: '"Proxima Nova", sans-serif' }}
               >
                 <span>{stock.symbol}</span>

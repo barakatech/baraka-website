@@ -56,31 +56,33 @@ export function StockCompactCard({
 
   const content = (
     <div
-      className="flex-shrink-0 w-[20%] min-w-[140px] h-[88px] bg-[#191919] rounded-[16px] p-2 pb-3 hover:bg-[#252525] transition-colors cursor-pointer flex flex-col justify-between"
+      className="flex-shrink-0 w-[165px] h-[88px] bg-[#191919] rounded-[16px] p-3 hover:bg-[#252525] transition-colors cursor-pointer flex flex-col justify-between"
       style={{ fontFamily: '"Proxima Nova", sans-serif' }}
     >
         <div className="flex items-center justify-between">
           <p className="text-white font-semibold text-[16px]">
             {symbol}
           </p>
-          <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center overflow-hidden">
+          <div className="w-[32px] h-[32px] bg-black rounded-full flex items-center justify-center overflow-hidden">
             {imageUrl ? (
-              <img src={imageUrl} alt={symbol} className="w-full h-full object-cover" />
+              <img src={imageUrl} alt={symbol} className="w-[32px] h-[32px] object-contain" />
             ) : (
-              <span className="text-white font-bold text-[6px]">{symbol?.slice(0, 2)}</span>
+              <span className="text-white font-bold text-[10px]">{symbol?.slice(0, 2)}</span>
             )}
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <p className={`text-white/70 text-[16px] transition-all ${isLoading ? 'opacity-70' : ''}`}>
+          <p className={`text-white text-[16px] transition-all ${isLoading ? 'opacity-70' : ''}`}>
             ${displayPrice.toFixed(2)}
           </p>
           <div className="flex items-center gap-1">
-            <img
-              src={isPositive ? "/attached_assets/Icons_Arrows_1769066937907.png" : "/attached_assets/Icons_Arrows_red_1769066937907.png"}
-              alt={isPositive ? "up" : "down"}
-              className="w-3 h-3"
-            />
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {isPositive ? (
+                <path d="M2.5 7.5L6 4L9.5 7.5" stroke="#0DDD00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              ) : (
+                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="#FF3317" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              )}
+            </svg>
             <span className={`text-[16px] font-medium transition-all ${isPositive ? 'text-[#0DDD00]' : 'text-[#FF3317]'} ${isLoading ? 'opacity-70' : ''}`}>
               {Math.abs(displayChangePercent).toFixed(1)}%
             </span>
