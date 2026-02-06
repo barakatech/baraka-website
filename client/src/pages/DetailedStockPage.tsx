@@ -41,9 +41,6 @@ const SimilarStocksSection = lazy(() =>
 const StockNewsSection = lazy(() =>
   import("./sections/StockNewsSection").then(m => ({ default: m.StockNewsSection }))
 );
-const FAQSection = lazy(() =>
-  import("./sections/FAQSection").then(m => ({ default: m.FAQSection }))
-);
 const ShareholdersSection = lazy(() =>
   import("./sections/ShareholdersSection").then(m => ({ default: m.ShareholdersSection }))
 );
@@ -245,11 +242,6 @@ export const DetailedStockPage = (): JSX.Element => {
             <StockNewsSection symbol={instrumentDetails.symbol || stockPageData?.symbol_name || ''} />
           </Suspense>
 
-          <Suspense fallback={<SectionSkeleton />}>
-            <div className="mt-8">
-              <FAQSection />
-            </div>
-          </Suspense>
         </div>
 
         <div className="flex flex-col gap-4">
